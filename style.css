@@ -23,6 +23,12 @@
    }
 }
 
+canvas {
+   position: absolute; /* Position the canvas within the div */
+   top: 0;
+   left: 0;
+}
+
 /* @media( min-width: 1000px ) {
    :root {
       --pixel-size: 5px;
@@ -69,6 +75,11 @@ body {
    overflow: hidden;
    background: #61ddf7;
    position: relative;
+}
+
+.map.pixel-art {
+   border: 1px solid black;
+   position: relative; /* Ensure the canvas stays within the div */
 }
 
 .map {
