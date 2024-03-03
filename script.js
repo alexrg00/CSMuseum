@@ -1,6 +1,12 @@
 const X_AXIS = 'x_axis'
 const Y_AXIS = 'y_axis'
 
+const rootStyles = getComputedStyle(document.documentElement);
+
+const gridCellScaler = rootStyles.getPropertyValue('--grid-cell-scaler');
+const mapWidth = rootStyles.getPropertyValue('--min-map-width-ratio');
+const mapHeight = rootStyles.getPropertyValue('--min-map-height-ratio');
+
 /** 
  * Direction key state 
  */ 
@@ -25,17 +31,18 @@ const speed = 1;
 
 function main() {
 
+   console.log(`gridScaler: ${gridCellScaler * mapHeight}`)
    let map_ratios = {
       // render browser/original
-      'x_axis': 256/316,
-      'y_axis': 288/364
+      'x_axis': (gridCellScaler * mapWidth) / 316,
+      'y_axis': (gridCellScaler * mapHeight) / 364
    }
    // position the players at 0, 0 based on where they're standing
    // TODO: future positions will need to account for the position of the player sprite adjustment. play position is not the top left of sprite, but where it's standing
    let char_coords = {
       // coordinates from the original * map_ratio[]
-      'x_axis': (0) * map_ratios[X_AXIS],
-      'y_axis': (0) * map_ratios[Y_AXIS]
+      'x_axis': (316) * map_ratios[X_AXIS],
+      'y_axis': (364) * map_ratios[Y_AXIS]
    }
 
    // State of which arrow keys we are holding down
@@ -179,14 +186,14 @@ function placeCharacter(held_directions, directions, char_coords, x_axis, speed,
    character.style.transform = `translate3d( ${char_coords[x_axis] * pixelSize}px, ${char_coords[y_axis] * pixelSize}px, 0 )`;
 
    // use this to get the size of the map for the player collisions
-   //console.log(`${char_coords[x_axis]}, ${char_coords[y_axis]}`)
+   console.log(`${char_coords[x_axis]}, ${char_coords[y_axis]}`)
    let collision = checkCollision(char_coords[x_axis], char_coords[y_axis], impassableTerrains);
 
    // TODO: add collision prevention
    if (collision) {
-      console.log("Collision detected! Cannot move.");
+      //console.log("Collision detected! Cannot move.");
    } else {
-      console.log("No collision detected. Can move freely.");
+      //console.log("No collision detected. Can move freely.");
    }
 }
 

@@ -1,7 +1,8 @@
 :root {
    /*Variables */
-   --pixel-size: 2px;
-   --grid-cell: calc(var(--pixel-size) * 16);
+   --pixel-size: 2px; /* has do to with the zoom and size of the map, but not the coordinates of collisions*/
+   --grid-cell-scaler: 16;
+   --grid-cell: calc(var(--pixel-size) * var(--grid-cell-scaler));
    --bg: #9fa7e4;
    /* Change this depending on the ratio of the map i.e. 1600 x 1800
       At the moment it's for the initial gif map 
