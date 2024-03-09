@@ -139,6 +139,7 @@ function main() {
 
    document.body.addEventListener("mouseup", () => {
       console.log('mouse is up')
+      isPressed = false;
       held_directions = [];
       removePressedAll();
    })
@@ -189,12 +190,14 @@ function placeCharacter(held_directions, directions, char_coords, x_axis, speed,
    console.log(`${char_coords[x_axis]}, ${char_coords[y_axis]}`)
    let collision = checkCollision(char_coords[x_axis], char_coords[y_axis], impassableTerrains);
 
-   // TODO: add collision prevention
    if (collision) {
-      //console.log("Collision detected! Cannot move.");
-   } else {
-      //console.log("No collision detected. Can move freely.");
-   }
+      console.log('collision detected')
+      // simply counter the speed!
+      if (held_direction === directions.right) { char_coords[x_axis] -= speed; }
+      if (held_direction === directions.left) { char_coords[x_axis] += speed; }
+      if (held_direction === directions.down) { char_coords[y_axis] -= speed; }
+      if (held_direction === directions.up) { char_coords[y_axis] += speed; }
+   } 
 }
 
 function drawImpassableTerrains(showCollisions, map, impassableTerrains) {
@@ -210,7 +213,7 @@ function drawImpassableTerrains(showCollisions, map, impassableTerrains) {
    canvas.height = height;
 
    // Clear canvas
-   ctx.clearRect(0, 0, canvas.width, canvas.height); 
+   //ctx.clearRect(0, 0, canvas.width, canvas.height); 
 
    if (showCollisions) {
       ctx.fillStyle = "rgba(255, 0, 0, 0.5)"; // Color for impassable terrains
