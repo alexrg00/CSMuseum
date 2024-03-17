@@ -7,6 +7,8 @@ const gridCellScaler = rootStyles.getPropertyValue('--grid-cell-scaler');
 const mapWidth = rootStyles.getPropertyValue('--min-map-width-ratio');
 const mapHeight = rootStyles.getPropertyValue('--min-map-height-ratio');
 
+
+
 /** 
  * Direction key state 
  */ 
@@ -27,22 +29,44 @@ const keys = {
 
 const character = document.querySelector(".character");
 const map = document.querySelector(".map");
+
+async function getImageFromSource(src) {
+   // convert the image onload into a promise to use it outside of the function block
+  return new Promise((resolve, reject) => {
+    let img = new Image()
+    img.onload = () => resolve(img)
+    img.onerror = reject
+    img.src = src
+  })
+}
+
 const speed = 1; 
 
-function main() {
+async function main() {
+   /**
+    * Get map image source width and height
+    */
+   const computedStyle = window.getComputedStyle(map);
+   const backgroundImage = computedStyle.getPropertyValue('background-image');
+   console.log(backgroundImage)
+   // remove 'url()' from the image src string
+   const imageUrl = backgroundImage.match(/url\("([^"]+)"\)/)[1];
+   mapSource = await getImageFromSource(imageUrl)
+
+   console.log(mapSource.width, mapSource.height)
 
    console.log(`gridScaler: ${gridCellScaler * mapHeight}`)
    let map_ratios = {
       // render browser/original
-      'x_axis': (gridCellScaler * mapWidth) / 316,
-      'y_axis': (gridCellScaler * mapHeight) / 364
+      'x_axis': (gridCellScaler * mapWidth) / mapSource.width,
+      'y_axis': (gridCellScaler * mapHeight) / mapSource.height
    }
    // position the players at 0, 0 based on where they're standing
    // TODO: future positions will need to account for the position of the player sprite adjustment. play position is not the top left of sprite, but where it's standing
    let char_coords = {
       // coordinates from the original * map_ratio[]
-      'x_axis': (316) * map_ratios[X_AXIS],
-      'y_axis': (364) * map_ratios[Y_AXIS]
+      'x_axis': (mapSource.width) * map_ratios[X_AXIS],
+      'y_axis': (mapSource.height) * map_ratios[Y_AXIS]
    }
 
    // State of which arrow keys we are holding down
@@ -92,10 +116,10 @@ function main() {
       // this needs to be updated every frame because the browser window may be resized by the user 
       let impassableTerrainsVisual = [{
          // getting map width/height to convert coordinates from original to browser render
-            left: 79 * map.offsetWidth / 316, 
-            top: 100 * map.offsetHeight / 364, 
-            width: 159  * map.offsetWidth / 316,
-            height: 140 * map.offsetHeight / 364
+            left: 79 * map.offsetWidth / mapSource.width, 
+            top: 100 * map.offsetHeight / mapSource.height, 
+            width: 159  * map.offsetWidth / mapSource.width,
+            height: 140 * map.offsetHeight / mapSource.height
          }
       ];
 
